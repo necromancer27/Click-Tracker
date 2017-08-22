@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\TrackerController;
 use App\Http\Controllers\ClicksController;
+use Illuminate\Support\Facades\Session;
 
 
 class ClientController extends Controller
@@ -31,8 +32,12 @@ class ClientController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
+        $this->validate($request,[
+            'email' => 'unique:clients,e_mail'
+        ]);
+
         $client = new Client;
         
         do{
@@ -45,7 +50,7 @@ class ClientController extends Controller
         $client->f_name = $_POST['fname'];
         $client->l_name = $_POST['lname'];
         $client->e_mail = $_POST['email'];
-        $client->pass = $_POST['password'];
+        $client->pass = bcrypt($_POST['password']);
         $client->valid_till = Carbon::now()->addMonth();
         $client->save();
 
@@ -53,9 +58,11 @@ class ClientController extends Controller
 
     }
 
-    public function login(){
-        if(Client::where('e_mail','=',$_POST['email'])->where( 'pass','=',$_POST['password'])->first()){
+    public function login(Request $request){
+        $client = client::where('e_mail','=',$request->email)->where( 'pass','=',bcrypt($request->password))->first();
+        if($client){
             //$_SESSION['valid_user'] = 1;
+            Session::put('cid',$client['c_id']);
             return view('profile');
         }
         else{

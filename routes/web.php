@@ -15,37 +15,42 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::group(['middleware' => ['web']],function (){
+    Route::post('/signup', 'ClientController@create');
 
-Route::post('/signup', 'ClientController@create');
+    Route::post('/login', 'ClientController@login');
 
-Route::post('/login', 'ClientController@login');
+    Route::get('/client', 'ClientController@index');
 
-Route::get('/client', 'ClientController@index');
+    Route::post('/tracker', 'TrackerController@create');
 
-Route::post('/tracker', 'TrackerController@create');
+    Route::get('/trackers', 'TrackerController@index');
 
-Route::get('/trackers', 'TrackerController@index');
+    Route::post('/open/{tr_id}', 'TrackerController@open');
+
+    Route::post('/click/{tr_id}', 'ClicksController@click');
+
+    Route::get('/stats/rate','ClicksController@rate');
+
+    Route::get('/stats/clicked','ClicksController@clicked');
+
+    Route::get('/stats/topClick','ClicksController@topClick');
+
+    Route::get('/stats','ClientController@central');
+
+    Route::post('/test', 'TrackerController@test');
+
+});
+
+
 
 //Route::get('/tracker/{tr_id}', 'TrackerController@retrieve');
-
-Route::post('/open/{tr_id}', 'TrackerController@open');
-
-Route::post('/click/{tr_id}', 'ClicksController@click');
 
 
 //Route::get('/stats/opens/{type}','TrackerController@allstats');
 //
 //Route::get('/stats/clicks/{type}','ClicksController@allstats');
 ////
-Route::get('/stats/rate','ClicksController@rate');
-
-Route::get('/stats/clicked','ClicksController@clicked');
-
-Route::get('/stats/topClick','ClicksController@topClick');
-
-Route::get('/stats','ClientController@central');
-
-Route::post('/test', 'TrackerController@test');
 
 
 

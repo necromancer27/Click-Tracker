@@ -36,7 +36,7 @@
             <h1>Welcome Back!</h1>
 
             <form action="http://opentracker.dev/login" method="post">
-
+                {{ csrf_field() }}
                 <div class="field-wrap">
                     <label>
                         Email Address<span class="req">*</span>
@@ -67,20 +67,20 @@
             <h1>Sign Up</h1>
 
             <form action="http://opentracker.dev/signup" method="post">
-
+                {{csrf_field()}}
                 <div class="top-row">
                     <div class="field-wrap">
                         <label>
                             First Name<span class="req">*</span>
                         </label>
-                        <input type="text" name="fname" required autocomplete="off" />
+                        <input type="text" name="fname"  autocomplete="off" required />
                     </div>
 
                     <div class="field-wrap">
                         <label>
                             Last Name<span class="req">*</span>
                         </label>
-                        <input type="text" name="lname"required autocomplete="off"/>
+                        <input type="text" name="lname"  autocomplete="off" required />
                     </div>
                 </div>
 
@@ -88,7 +88,7 @@
                     <label>
                         Email Address<span class="req">*</span>
                     </label>
-                    <input type="email" name="email"required autocomplete="off"/>
+                    <input type="email" name="email" required autocomplete="off"/>
                 </div>
 
                 <div class="field-wrap">
@@ -98,12 +98,12 @@
                     <input type="password" name="password"required autocomplete="off"/>
                 </div>
 
+
                 <button type="submit" class="button button-block"/>Get Started</button>
 
             </form>
 
         </div>
-
 
     </div><!-- tab-content -->
 
