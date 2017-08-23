@@ -60,12 +60,24 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return \App\User
      */
+
+    function randomString()
+    {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*';
+        $randstring = '';
+        for ($i = 0; $i < 20; $i++) {
+        $randstring .= $characters[rand(0, strlen($characters))];
+        }
+        return $randstring;
+    }
+
     protected function create(array $data)
     {
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
+            'token' => $this->randomString()
         ]);
     }
 }

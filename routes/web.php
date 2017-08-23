@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/home');
 });
 
 Route::group(['middleware' => ['web']],function (){
@@ -40,6 +40,10 @@ Route::group(['middleware' => ['web']],function (){
 
     Route::post('/test', 'TrackerController@test');
 
+    Route::auth();
+
+    Route::get('/home','HomeController@index');
+
 });
 
 
@@ -61,3 +65,4 @@ Route::group(['middleware' => ['web']],function (){
 //Route::get('/stats/openInterval/{type}/{id}','TrackerController@intervalStats');
 //
 //Route::get('/stats/clickInterval/{type}/{id}','ClicksController@intervalStats');
+
