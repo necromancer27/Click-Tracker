@@ -7,6 +7,7 @@ use App\tracker;
 use App\Records;
 use App\client;
 use App\clicks;
+use Illuminate\Support\Facades\Auth;
 use UAParser\Parser;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
@@ -74,25 +75,25 @@ class ClicksController extends Controller
 	}
 
 
-	function rate(){
+	function rate(Request $request){
 
-		if(!(Tracker::where('t_id','=',$_SERVER['HTTP_ID'])->first()))
+		if(!(Tracker::where('t_id','=',$request->id)->first()))
 			return "Invalid tracker";
 
-        if(!(Records::where('t_id','=',$_SERVER['HTTP_ID'])->first()))
+        if(!(Records::where('t_id','=',$request->id)->first()))
             return 0;
 
         $start = Carbon::createFromFormat('Y-m-d H:i:s','1900-1-1 00:00:00');
         $end = Carbon::createFromFormat('Y-m-d H:i:s','2100-1-1 00:00:00');
 
-		if($_SERVER['HTTP_TYPE']){
-		    $uquery = new uniqueInterval($_SERVER['HTTP_ID']);
+		if($request->type){
+		    $uquery = new uniqueInterval($request->id);
 		    $uquery->setInterval($start,$end);
 
 		    return ($uquery->executeClick()/$uquery->executeOpen())*100;
         }
         else{
-		    $cquery = new countInterval($_SERVER['HTTP_ID']);
+		    $cquery = new countInterval($request->id);
 		    $cquery->setInterval($start,$end);
 
             return ($cquery->executeClick()/$cquery->executeOpen())*100;
@@ -136,15 +137,17 @@ class ClicksController extends Controller
         $start = Carbon::createFromFormat('Y-m-d H:i:s','1900-1-1 00:00:00');
         $end = Carbon::createFromFormat('Y-m-d H:i:s','2100-1-1 00:00:00');
 
-        if($_SERVER['HTTP_FROM']){
-            $start = Carbon::createFromFormat('Y-m-d H:i:s',$_SERVER['HTTP_FROM']);
-        }
-        if($_SERVER['HTTP_TO']){
-            $end = Carbon::createFromFormat('Y-m-d H:i:s',$_SERVER['HTTP_TO']);
-        }
+//        if($_SERVER['HTTP_FROM']){
+//            $start = Carbon::createFromFormat('Y-m-d H:i:s',$_SERVER['HTTP_FROM']);
+//        }
+//        if($_SERVER['HTTP_TO']){
+//            $end = Carbon::createFromFormat('Y-m-d H:i:s',$_SERVER['HTTP_TO']);
+//        }
 
 		return collect(DB::table('clicks')
-                 ->select('t_id', DB::raw('count(*) as total'))
+                ->join('trackers','trackers.t_id','=','clicks.t_id')
+                 ->select('clicks.t_id', DB::raw('count(*) as total'))
+                ->where('trackers.c_id','=',Auth::user()->id)
                  ->where('Time','>=',$start)
                  ->where('Time','<',$end)
                  ->groupBy('t_id')

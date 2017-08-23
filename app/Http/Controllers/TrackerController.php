@@ -6,8 +6,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\tracker;
 use App\Records;
-use App\client;
+use App\user;
 use App\classes\TransparentPixelResponse;
+use Illuminate\Support\Facades\Auth;
 use UAParser\Parser;
 use Illuminate\Support\Facades\Log;
 use App\classes\count;
@@ -20,32 +21,30 @@ class TrackerController extends Controller
 {
 
     function index(){
-		return tracker::pluck('t_id');
+		return tracker::where('c_id','=',Auth::user()->id)->pluck('t_id');
 	}
 
     
 	// Generate new token
-	function create(){
+	function create(Request $request){
 
 		$tracker = new tracker;
-		$client = new client;
 
-		$token = $_SERVER['HTTP_TOKEN'];
+		$token = $request->token;
 
-		$c_id = $client->select('c_id')->where('token','=',$token)->pluck('c_id');
 
-		if($c_id){
+		if(Auth::user()->token == $token){
 
 			do{
 				$tr_id = rand(0,1000);
 			}while(tracker::where('t_id','=',$tr_id)->first());
 			
 			$tracker->t_id = $tr_id;
-			$tracker->c_id = $c_id[0];
+			$tracker->c_id = Auth::user()->id;
 			
 			$tracker->save();
 			//$uri = "http://openTracker/tracker/".$id;
-			return $tr_id;
+			return redirect('/home');
 		}
 		else
 			return "Invalid Client";

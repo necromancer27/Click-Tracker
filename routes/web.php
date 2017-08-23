@@ -16,19 +16,12 @@ Route::get('/', function () {
 });
 
 Route::group(['middleware' => ['web']],function (){
-    Route::post('/signup', 'ClientController@create');
-
-    Route::post('/login', 'ClientController@login');
-
-    Route::get('/client', 'ClientController@index');
 
     Route::post('/tracker', 'TrackerController@create');
 
-    Route::get('/trackers', 'TrackerController@index');
+    Route::get('/open/{tr_id}', 'TrackerController@open');
 
-    Route::post('/open/{tr_id}', 'TrackerController@open');
-
-    Route::post('/click/{tr_id}', 'ClicksController@click');
+    Route::get('/click/{tr_id}', 'ClicksController@click');
 
     Route::get('/stats/rate','ClicksController@rate');
 

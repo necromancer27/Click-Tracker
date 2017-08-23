@@ -32,55 +32,6 @@ class ClientController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request)
-    {
-        $this->validate($request,[
-            'email' => 'unique:clients,e_mail'
-        ]);
-
-        $client = new Client;
-        
-        do{
-            $c_id = rand(0,100);
-            
-        }while(client::where('c_id','=',$c_id)->first());
-
-        $client->c_id = $c_id;
-        $client->token = $this->randomString();
-        $client->f_name = $_POST['fname'];
-        $client->l_name = $_POST['lname'];
-        $client->e_mail = $_POST['email'];
-        $client->pass = bcrypt($_POST['password']);
-        $client->valid_till = Carbon::now()->addMonth();
-        $client->save();
-
-        return "Home page";
-
-    }
-
-    public function login(Request $request){
-        $client = client::where('e_mail','=',$request->email)->where( 'pass','=',bcrypt($request->password))->first();
-        if($client){
-            //$_SESSION['valid_user'] = 1;
-            Session::put('cid',$client['c_id']);
-            return view('profile');
-        }
-        else{
-            return view('welcome');
-        }
-    }
-
-
-    function randomString()
-    {
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*';
-        $randstring = '';
-        for ($i = 0; $i < 10; $i++) {
-            $randstring .= $characters[rand(0, strlen($characters))];
-        }
-        return $randstring;
-    }
-
 
     public function central(){
 

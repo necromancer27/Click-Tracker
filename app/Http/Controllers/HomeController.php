@@ -23,6 +23,9 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $t_controller = new TrackerController;
+        $trackers = $t_controller->index();
+
+        return view('home',compact('trackers'));
     }
 }
