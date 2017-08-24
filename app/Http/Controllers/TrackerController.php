@@ -36,7 +36,7 @@ class TrackerController extends Controller
 		if(Auth::user()->token == $token){
 
 			do{
-				$tr_id = rand(0,1000);
+				$tr_id = rand(0,100000000);
 			}while(tracker::where('t_id','=',$tr_id)->first());
 			
 			$tracker->t_id = $tr_id;
@@ -106,13 +106,15 @@ class TrackerController extends Controller
         $uquery = new uniqueInterval($id);
         $uquery->setInterval($start,$end);
 
-        $respose = array();
+       $respose = new \StdClass();
+       $respose->id = $id;
+       $respose->total_opens = $cquery->executeOpen();
+       $respose->unique_opens = $uquery->executeOpen();
+       $respose->Latest_open = $this->latest($id,$start,$end);
 
-//        $respose[] = array('total_opens' => $cquery->executeOpen());
-//        $respose[] = array('unique_opens' => $uquery->executeOpen());
-//        $respose[] = array('Latest_open' => $this->latest($id,$start,$end));
+       if(!$respose->Latest_open)
+           $respose->Latest_open = "---Not Available---";
 
-        $respose[] = array('total_opens' => $cquery->executeOpen(),'unique_opens' => $uquery->executeOpen(),'Latest_open' => $this->latest($id,$start,$end));
         return $respose;
 	}
 

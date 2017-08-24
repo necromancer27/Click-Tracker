@@ -13,15 +13,33 @@
             <h4><a href="#" style="text-decoration:none;"><strong>Tracker Links</strong></a> – <small><a href="#" style="text-decoration:none; color:grey;"><i><i class="fa fa-clock-o" aria-hidden="true"></i> {{count($trackers)}}</i></a></small></h4>
             <hr>
             <div class="post-content">
-                <ul class="list-group">
+                <ul class="list-group" style="height: 345px; overflow: hidden; overflow-y: scroll;">
                     @foreach($trackers as $tracker)
-                        <li class="list-group-item"> http://opentracker/{{$tracker}} <a class="pull-right" style="margin-right: 20px" href='open/{{$tracker}}'>open</a> <a class="pull-right" style="margin-right: 50px" href='click/{{$tracker}}'>click</a></li>
+                        {{--<li class="list-group-item"> {{$tracker}} <a class="pull-right" style="margin-right: 20px" href='open/{{$tracker}}'>open</a> <a class="pull-right" style="margin-right: 50px" href='click/{{$tracker}}'>click</a></li>--}}
+                        <li class="list-group-item">
+                            Tracker ID : {{$tracker}}
+                            <span id='o_link' class="pull-right" data-track='{{$tracker}}' style="margin-right: 20px" onclick="openLink({{$tracker}})"><a href="#"> Open Link</a></span>
+                            <span id='c_link' class="pull-right" data-track='{{$tracker}}' style="margin-right: 50px" onclick="clickLink({{$tracker}})"><a href="#"> Click Link</a></span>
+                            {{--<a class="pull-right" style="margin-right: 50px" href='click/{{$tracker}}'>click</a>--}}
+                        </li>
                     @endforeach
                 </ul>
             </div>
 
         </div>
     </div>
+@endsection
+
+@section('scripts')
+    <script>
+        function openLink(track) {
+           window.prompt("Copy to clipboard: Ctrl+C, Enter","http://opentracker.dev/open/"+track);
+        }
+
+        function clickLink(track) {
+            window.prompt("Copy to clipboard: Ctrl+C, Enter","http://opentracker.dev/click/"+track);
+        }
+    </script>
 @endsection
 
 

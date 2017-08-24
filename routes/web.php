@@ -15,6 +15,8 @@ Route::get('/', function () {
     return redirect('/home');
 });
 
+
+
 Route::group(['middleware' => ['web']],function (){
 
     Route::post('/tracker', 'TrackerController@create');
@@ -29,7 +31,7 @@ Route::group(['middleware' => ['web']],function (){
 
     Route::get('/stats/topClick','ClicksController@topClick');
 
-    Route::get('/stats','ClientController@central');
+    Route::get('/stats','HomeController@multiTracker');
 
     Route::post('/test', 'TrackerController@test');
 

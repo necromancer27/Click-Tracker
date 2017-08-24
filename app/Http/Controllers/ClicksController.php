@@ -68,9 +68,15 @@ class ClicksController extends Controller
         $uquery = new uniqueInterval($id);
         $uquery->setInterval($start,$end);
 
-        $respose = array();
+        $respose = new \StdClass();
+        $respose->id = $id;
+        $respose->total_clicks = $cquery->executeClick();
+        $respose->unique_clicks = $uquery->executeClick();
+        $respose->Latest_click = $this->latest($id,$start,$end);
 
-        $respose[] = array('total_clicks' => $cquery->executeClick(), 'unique_clicks' => $uquery->executeClick(), 'Latest_click' => $this->latest($id,$start,$end));
+        if(!$respose->Latest_click)
+            $respose->Latest_click = '---Not Available---';
+
 		return $respose;
 	}
 
