@@ -107,23 +107,23 @@ class ClicksController extends Controller
 
 	}
 
-	function clicked(){
+	function clicked(Request $request){
 
-        if(!(Tracker::where('t_id','=',$_SERVER['HTTP_ID'])->first()))
+        if(!(Tracker::where('t_id','=',$request->id)->first()))
             return "Invalid tracker";
 
         $start = Carbon::createFromFormat('Y-m-d H:i:s','1900-1-1 00:00:00');
         $end = Carbon::createFromFormat('Y-m-d H:i:s','2100-1-1 00:00:00');
 
-        if($_SERVER['HTTP_FROM']){
-            $start = Carbon::createFromFormat('Y-m-d H:i:s',$_SERVER['HTTP_FROM']);
+        if($request->has('from')){
+            $start = Carbon::createFromFormat('Y-m-d H:i:s',$request->from);
         }
-        if($_SERVER['HTTP_TO']){
-            $end = Carbon::createFromFormat('Y-m-d H:i:s',$_SERVER['HTTP_TO']);
+        if($request->has('to')){
+            $end = Carbon::createFromFormat('Y-m-d H:i:s',$request->to);
         }
 
 		return Clicks::select('ip_address','Browser','OS','Time')
-						->where('t_id','=',$_SERVER['HTTP_ID'])
+						->where('t_id','=',$request->id)
                         ->where('Time','>=',$start)
                         ->where('Time','<',$end)
                         ->get();
@@ -143,13 +143,6 @@ class ClicksController extends Controller
         $start = Carbon::createFromFormat('Y-m-d H:i:s','1900-1-1 00:00:00');
         $end = Carbon::createFromFormat('Y-m-d H:i:s','2100-1-1 00:00:00');
 
-//        if($_SERVER['HTTP_FROM']){
-//            $start = Carbon::createFromFormat('Y-m-d H:i:s',$_SERVER['HTTP_FROM']);
-//        }
-//        if($_SERVER['HTTP_TO']){
-//            $end = Carbon::createFromFormat('Y-m-d H:i:s',$_SERVER['HTTP_TO']);
-//        }
-
 		return collect(DB::table('clicks')
                 ->join('trackers','trackers.t_id','=','clicks.t_id')
                  ->select('clicks.t_id', DB::raw('count(*) as total'))
@@ -161,72 +154,6 @@ class ClicksController extends Controller
                  ->first());
 
 	}
-
-
-
-    function forAll($qry){
-
-        $ids = Tracker::pluck('t_id');
-
-        foreach($ids as $id){
-
-            $qry->setVal($id);
-            $value = $qry->executeClick($id);
-            $counts[] = array( $id => $value);
-        }
-
-        return $counts;
-    }
-
-
-    //
-//	function alltimeStats($type,$id){
-//
-//		if(!(Tracker::where('t_id','=',$id)->first()))
-//			return "Invalis tracker";
-//
-//
-//		if($type == 'total')
-//			$qry = new count;
-//		else if($type == 'unique')
-//			$qry = new unique;
-//		else
-//			return "Invalid Route";
-//
-//
-//		$qry->setVal($id);
-//		return $qry->executeClick();
-//	}
-//
-//
-//	function intervalStats($type,$id){
-//
-//		if(!(Tracker::where('t_id','=',$id)->first()))
-//			return "Invalis tracker";
-//
-//		if($type == 'total')
-//			$qry = new countInterval($id);
-//		else if($type == 'unique')
-//			$qry = new uniqueInterval($id);
-//		else
-//			return "Invalid Route";
-//
-//		return $this->interval($qry);
-//	}
-//
-//
-//	function allStats($type){
-//
-//		if($type == 'total')
-//			$qry = new count;
-//		else if($type == 'unique')
-//			$qry = new unique;
-//		else
-//			return "Invalid Route";
-//
-//		return $this->forAll($qry);
-//	}
-
 
 
 }

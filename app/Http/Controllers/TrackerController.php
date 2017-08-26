@@ -118,25 +118,57 @@ class TrackerController extends Controller
         return $respose;
 	}
 
-	function forAll($qry){
-		
-		$ids = Tracker::pluck('t_id');
-		
-		foreach($ids as $id){
 
-			$qry->setVal($id);
-			$value = $qry->executeOpen($id);
-			$counts[] = array( $id => $value);
-		}
-
-		return $counts;
-	}
-
-
-//	function alltimeStats($type,$id){
 //
-//		if(!(Tracker::where('t_id','=',$id)->first()))
-//			return "Invalis tracker";
+//	function forAll($qry){
+//
+//		$ids = Tracker::pluck('t_id');
+//
+//		foreach($ids as $id){
+//
+//			$qry->setVal($id);
+//			$value = $qry->executeOpen($id);
+//			$counts[] = array( $id => $value);
+//		}
+//
+//		return $counts;
+//	}
+//
+//
+////	function alltimeStats($type,$id){
+////
+////		if(!(Tracker::where('t_id','=',$id)->first()))
+////			return "Invalis tracker";
+////
+////		if($type == 'total')
+////			$qry = new count;
+////		else if($type == 'unique')
+////			$qry = new unique;
+////		else
+////			return "Invalid Route";
+////
+////		$qry->setVal($id);
+////		return $qry->executeOpen();
+////	}
+//
+//
+////	function intervalStats($type,$id){
+////
+////		if(!(Tracker::where('t_id','=',$id)->first()))
+////			return "Invalis tracker";
+////
+////		if($type == 'total')
+////			$qry = new CountInterval($id);
+////		else if($type == 'unique')
+////			$qry = new uniqueInterval($id);
+////		else
+////			return "Invalid Route";
+////
+////		return $this->interval($qry);
+////	}
+////
+//
+//	function allStats($type){
 //
 //		if($type == 'total')
 //			$qry = new count;
@@ -145,55 +177,25 @@ class TrackerController extends Controller
 //		else
 //			return "Invalid Route";
 //
-//		$qry->setVal($id);
-//		return $qry->executeOpen();
-//	}
-
-
-//	function intervalStats($type,$id){
-//
-//		if(!(Tracker::where('t_id','=',$id)->first()))
-//			return "Invalis tracker";
-//
-//		if($type == 'total')
-//			$qry = new CountInterval($id);
-//		else if($type == 'unique')
-//			$qry = new uniqueInterval($id);
-//		else
-//			return "Invalid Route";
-//
-//		return $this->interval($qry);
+//		return $this->forAll($qry);
 //	}
 //
-
-	function allStats($type){
-
-		if($type == 'total')
-			$qry = new count;
-		else if($type == 'unique')
-			$qry = new unique;
-		else
-			return "Invalid Route";
-
-		return $this->forAll($qry);
-	}
-
-//------------------------------------------------//
-
-	function test(){
-
-		foreach($_POST as $key=>$value) {
-                // if (substr($key,0,5)=="HTTP_") {
-                //     $key=str_replace(" ","-",ucwords(strtolower(str_replace("_"," ",substr($key,5)))));
-                //     $out[$key]=$value;
-                // }else{
-                    $out[$key]=$value;
-        		// }
-            }
-            return $out;
-
-		// return $_SERVER["HTTP_A"];
-
-	}
+////------------------------------------------------//
+//
+//	function test(){
+//
+//		foreach($_POST as $key=>$value) {
+//                // if (substr($key,0,5)=="HTTP_") {
+//                //     $key=str_replace(" ","-",ucwords(strtolower(str_replace("_"," ",substr($key,5)))));
+//                //     $out[$key]=$value;
+//                // }else{
+//                    $out[$key]=$value;
+//        		// }
+//            }
+//            return $out;
+//
+//		// return $_SERVER["HTTP_A"];
+//
+//	}
 
 }
