@@ -21,7 +21,7 @@ use App\Http\Controllers\TrackerController;
 class ClicksController extends Controller
 {
     
-	function click($tr_id){
+	function click($tr_id,Request $request){
 		$click = new Clicks;
 		$tracker = new tracker;
 		$track = $tracker->where('t_id','=',$tr_id)->first();
@@ -29,17 +29,19 @@ class ClicksController extends Controller
 		if($track){
 
 			$valid = $click->where('t_id','=',$tr_id)
-							->where('ip_address','=',$_SERVER['REMOTE_ADDR'])
+							->where('ip_address','=',$request->ip())
 							->where('Time','>',Carbon::now()->subMinute())
 							->first();
 			if($valid)
-				return "Invalid Click ";
+				return http_response_code(500);
 			
 			$click->t_id = $tr_id;
 
-			$click->ip_address = $_SERVER['REMOTE_ADDR'];
+			//$click->ip_address = $_SERVER['REMOTE_ADDR'];
+            $click->ip_address = $request->ip();
 
-			$ua = $_SERVER['HTTP_USER_AGENT'];;
+			//$ua = $_SERVER['HTTP_USER_AGENT'];;
+            $ua = $request->header('User-Agent');
 			$parser = Parser::create();
 			$result = $parser->parse($ua);
 			$click->browser = $result->ua->family;
@@ -55,7 +57,7 @@ class ClicksController extends Controller
 			return "redirect";
 		}
 		else
-			return "Tracker not found";
+			return http_response_code(500);
 	}
 
 
@@ -96,15 +98,17 @@ class ClicksController extends Controller
 		    $uquery = new uniqueInterval($request->id);
 		    $uquery->setInterval($start,$end);
 
-		    return ($uquery->executeClick()/$uquery->executeOpen())*100;
+		    $data = ($uquery->executeClick()/$uquery->executeOpen())*100;
         }
         else{
 		    $cquery = new countInterval($request->id);
 		    $cquery->setInterval($start,$end);
 
-            return ($cquery->executeClick()/$cquery->executeOpen())*100;
+            $data = ($cquery->executeClick()/$cquery->executeOpen())*100;
         }
-
+        //$data = array('data'=>$data);
+        //return json_encode($data);
+        return $data;
 	}
 
 	function clicked(Request $request){

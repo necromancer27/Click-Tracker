@@ -32,7 +32,6 @@ class TrackerController extends Controller
 
 		$token = $request->token;
 
-
 		if(Auth::user()->token == $token){
 
 			do{
@@ -47,12 +46,13 @@ class TrackerController extends Controller
 			return redirect('/home');
 		}
 		else
-			return "Invalid Client";
+			return http_response_code('500');
+           // return "invlid tracker";
 	}
 
 
 	// Record a tracker request
-	function open($tr_id){
+	function open($tr_id,Request $request){
 
 		$record = new Records;
 		$tracker = new tracker;
@@ -61,12 +61,14 @@ class TrackerController extends Controller
 		if($track){
 			
 			//$track->opened = $track->opened+1;
-			
+
 			$record->t_id = $tr_id;
+//			$record->ip_address = $_SERVER['REMOTE_ADDR'];
+            $record->ip_address = $request->ip();
+		//	$ua = $_SERVER['HTTP_USER_AGENT'];;
+            //$ua = $request->HTTP_USER_AGENT;
+            $ua = $request->header('User-Agent');
 
-			$record->ip_address = $_SERVER['REMOTE_ADDR'];
-
-			$ua = $_SERVER['HTTP_USER_AGENT'];;
 			$parser = Parser::create();
 			$result = $parser->parse($ua);
 			$record->browser = $result->ua->family;
@@ -77,11 +79,13 @@ class TrackerController extends Controller
 			$record->Time = date("Y-m-d H:i:s");
 
 			$record->save();
-			//$track->save();
-			return new TransparentPixelResponse();
+
+            return new TransparentPixelResponse();
 		}
-		else
-			return "Tracker not found";
+		else{
+            http_response_code(500);
+            return http_response_code();
+        }
 	}
 
 
