@@ -24,10 +24,10 @@
                 <ul class="list-group" style="height: 345px; overflow: hidden; overflow-y: scroll;">
                     @foreach($trackers as $tracker)
                         <li class="list-group-item">
-                            Tracker ID : {{$tracker->id}}
-                            <span class="pull-right" style="margin-right: 20px"> {{$tracker->total_clicks}}</span><span class="pull-right" style="margin-right: 10px">Total Clicks :</span>
-                            <span class="pull-right" style="margin-right: 50px"> {{$tracker->unique_clicks}}</span><span class="pull-right" style="margin-right: 10px">Unique Clicks :</span>
-                            <span class="pull-right" style="margin-right: 50px"> {{$tracker->Latest_click}}</span><span class="pull-right" style="margin-right: 10px">Latest Clicks :</span>
+                            Tracker ID : {{$tracker->t_id}}
+                            <span class="pull-right" style="margin-right: 20px"> {{$tracker->total}}</span><span class="pull-right" style="margin-right: 10px">Total Clicks :</span>
+                            <span class="pull-right" style="margin-right: 50px"> {{$tracker->unique}}</span><span class="pull-right" style="margin-right: 10px">Unique Clicks :</span>
+                            {{--<span class="pull-right" style="margin-right: 50px"> {{$tracker->Latest_click}}</span><span class="pull-right" style="margin-right: 10px">Latest Clicks :</span>--}}
 
                             {{--<a class="pull-right" style="margin-right: 50px" href='#'>Unique Clicks : {{$tracker->unique_clicks}}</a>--}}
                             {{--<a class="pull-right" style="margin-right: 80px" href='#'>Latest Clicks : {{$tracker->Latest_click}}</a>--}}

@@ -37,9 +37,9 @@ Route::group(['middleware' => ['web']],function (){
 
     Route::get('/home','HomeController@index');
 
+   // Route::get('/artificial','HomeController@trackerCreater');
 
-    //    Route::post('/test', 'TrackerController@test');
 });
 
-
+Route::get('/test', 'HomeController@user_agents');
 

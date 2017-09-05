@@ -61,28 +61,6 @@ class ClicksController extends Controller
 	}
 
 
-
-	function interval($id,$start,$end){
-
-        $cquery = new countInterval($id);
-        $cquery->setInterval($start,$end);
-
-        $uquery = new uniqueInterval($id);
-        $uquery->setInterval($start,$end);
-
-        $respose = new \StdClass();
-        $respose->id = $id;
-        $respose->total_clicks = $cquery->executeClick();
-        $respose->unique_clicks = $uquery->executeClick();
-        $respose->Latest_click = $this->latest($id,$start,$end);
-
-        if(!$respose->Latest_click)
-            $respose->Latest_click = '---Not Available---';
-
-		return $respose;
-	}
-
-
 	function rate(Request $request){
 
 		if(!(Tracker::where('t_id','=',$request->id)->first()))
@@ -106,8 +84,6 @@ class ClicksController extends Controller
 
             $data = ($cquery->executeClick()/$cquery->executeOpen())*100;
         }
-        //$data = array('data'=>$data);
-        //return json_encode($data);
         return $data;
 	}
 
@@ -133,19 +109,17 @@ class ClicksController extends Controller
                         ->get();
 	}
 
-	function latest($id,$start,$end){
-		return (Clicks::select('Time')
-						->where('t_id','=',$id)
-                        ->where('Time','>=',$start)
-                        ->where('Time','<',$end)
-                        ->latest()->first())['Time'];
-	}
-
-
-	function topClick(){
+	function topClick(Request $request){
 
         $start = Carbon::createFromFormat('Y-m-d H:i:s','1900-1-1 00:00:00');
         $end = Carbon::createFromFormat('Y-m-d H:i:s','2100-1-1 00:00:00');
+
+        if($request->has('from')){
+            $start = Carbon::createFromFormat('Y-m-d H:i:s',$request->from);
+        }
+        if($request->has('to')){
+            $end = Carbon::createFromFormat('Y-m-d H:i:s',$request->to);
+        }
 
 		return collect(DB::table('clicks')
                 ->join('trackers','trackers.t_id','=','clicks.t_id')
